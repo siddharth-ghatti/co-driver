@@ -1,0 +1,221 @@
+version: '3.8'
+
+services:
+  # MCP Gateway
+  mcp-gateway:
+    build: .
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      - RUST_LOG=info
+      - RUST_BACKTRACE=1
+    volumes:
+      - ./config.toml:/app/config.toml:ro
+      - gateway-logs:/var/log/mcp-gateway
+    depends_on:
+      - mcp-server-1
+      - mcp-server-2
+      - redis
+      - prometheus
+    networks:
+      - mcp-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Example MCP Server 1
+  mcp-server-1:
+    image: node:18-alpine
+    ports:
+      - "3001:3001"
+    working_dir: /app
+    volumes:
+      - ./examples/mcp-server:/app
+    command: >
+      sh -c "
+        npm install &&
+        node server.js --port 3001
+      "
+    environment:
+      - NODE_ENV=development
+      - MCP_SERVER_ID=mcp-server-1
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Example MCP Server 2
+  mcp-server-2:
+    image: node:18-alpine
+    ports:
+      - "3002:3002"
+    working_dir: /app
+    volumes:
+      - ./examples/mcp-server:/app
+    command: >
+      sh -c "
+        npm install &&
+        node server.js --port 3002
+      "
+    environment:
+      - NODE_ENV=development
+      - MCP_SERVER_ID=mcp-server-2
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # File Tools MCP Server
+  file-tools:
+    image: node:18-alpine
+    ports:
+      - "4001:4001"
+    working_dir: /app
+    volumes:
+      - ./examples/file-tools-server:/app
+      - shared-files:/shared
+    command: >
+      sh -c "
+        npm install &&
+        node server.js --port 4001
+      "
+    environment:
+      - NODE_ENV=development
+      - MCP_SERVER_ID=file-tools
+      - SHARED_PATH=/shared
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Web Tools MCP Server
+  web-tools:
+    image: node:18-alpine
+    ports:
+      - "4002:4002"
+    working_dir: /app
+    volumes:
+      - ./examples/web-tools-server:/app
+    command: >
+      sh -c "
+        npm install &&
+        node server.js --port 4002
+      "
+    environment:
+      - NODE_ENV=development
+      - MCP_SERVER_ID=web-tools
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Redis for caching and session storage
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Jaeger for distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # Load testing with Artillery
+  load-test:
+    image: artilleryio/artillery:latest
+    volumes:
+      - ./tests/load:/tests
+    working_dir: /tests
+    command: ["sleep", "infinity"]
+    networks:
+      - mcp-network
+    profiles:
+      - testing
+
+  # MCP Gateway Development
+  mcp-gateway-dev:
+    build:
+      context: .
+      target: builder
+    ports:
+      - "8081:8080"
+      - "9091:9090"
+    environment:
+      - RUST_LOG=debug
+      - RUST_BACKTRACE=full
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    working_dir: /app
+    command: cargo run -- --config config.toml --dev
+    depends_on:
+      - redis
+    networks:
+      - mcp-network
+    profiles:
+      - development
+
+networks:
+  mcp-network:
+    driver: bridge
+
+volumes:
+  gateway-logs:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+  shared-files:
+  cargo-cache:
+  target-cache:

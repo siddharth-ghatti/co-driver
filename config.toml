@@ -150,20 +150,11 @@ output = "stdout"
 structured = true
 
 # Middleware configuration
-[middleware.request_id]
-enabled = true
-header_name = "X-Request-ID"
-generate_if_missing = true
-
-[middleware.compression]
-enabled = true
-algorithms = ["gzip", "deflate"]
-min_size = 1024
-
-[middleware.timeout]
-request = 30
-upstream = 30
-keepalive = 60
+[middleware]
+request_id = { enabled = true, header_name = "X-Request-ID", generate_if_missing = true }
+compression = { enabled = true, algorithms = ["gzip", "deflate"], min_size = 1024 }
+timeout = { request = 30, upstream = 30, keepalive = 60 }
+transform = []
 
 # Example routes configuration
 [[gateway.routes]]

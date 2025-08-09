@@ -261,6 +261,7 @@ pub struct MiddlewareConfig {
     pub request_id: RequestIdConfig,
     pub compression: CompressionConfig,
     pub timeout: TimeoutConfig,
+    #[serde(default)]
     pub transform: Vec<TransformConfig>,
 }
 
@@ -605,7 +606,7 @@ ttl = 600
 max_size = 2000
 
 [upstream]
-groups = {}
+groups = []
 
 [upstream.health_check]
 enabled = true

@@ -155,9 +155,7 @@ Contact us for early access to these enterprise-grade capabilities:
 
 Ready to scale your MCP infrastructure to enterprise level?
 
-- **Enterprise Sales**: enterprise@mcpgateway.com
-- **Schedule Demo**: [Book a consultation](https://calendly.com/mcpgateway-enterprise)
-- **Technical Discussion**: [Contact our architects](mailto:solutions@mcpgateway.com)
+- **Project Page*: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
 
 ## Quick Start
 
@@ -705,10 +703,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
+- **Project Page**: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
 - **Documentation**: [docs.rs/mcp-gateway](https://docs.rs/mcp-gateway)
 - **Issues**: [GitHub Issues](https://github.com/your-org/mcp-gateway/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/your-org/mcp-gateway/discussions)
-- **Security**: security@your-org.com
+- **Security**: siddharth.ghatti@gmail.com
 
 ---
 

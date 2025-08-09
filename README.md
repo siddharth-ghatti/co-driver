@@ -1,6 +1,6 @@
 # MCP Gateway
 
-A high-performance, production-ready gateway for the Model Context Protocol (MCP) written in Rust. This gateway acts as a central proxy, load balancer, and management layer for MCP servers, similar to how Apigee manages API gateways.
+A high-performance, production-ready gateway for the Model Context Protocol (MCP) written in Rust. This gateway acts as a central proxy, load balancer, and management layer for MCP servers.
 
 ## Features
 

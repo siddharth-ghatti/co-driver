@@ -65,8 +65,14 @@ docker-compose up -d
 curl http://localhost:8080/health
 ```
 
-4. Access monitoring:
+4. Test the deployment:
+```bash
+node test-deployment.js
+```
+
+5. Access services:
 - Gateway: http://localhost:8080
+- Example MCP servers: http://localhost:3001, http://localhost:4001, http://localhost:4002
 - Metrics: http://localhost:9090/metrics
 - Grafana: http://localhost:3000 (admin/admin123)
 - Prometheus: http://localhost:9091
@@ -397,7 +403,49 @@ scenarios:
 
 ## Deployment
 
-### Docker
+### Quick Start with Examples
+
+This project includes complete example MCP servers that you can deploy immediately:
+
+```bash
+# Start the full stack (gateway + example servers)
+docker-compose up -d
+
+# Test the deployment
+node test-deployment.js
+
+# View services
+docker-compose ps
+```
+
+This will start:
+- **MCP Gateway** on port 8080 with metrics on 9090
+- **Basic MCP Servers** on ports 3001-3002 (Node.js)
+- **File Tools Server** on port 4001 (file operations)
+- **Web Tools Server** on port 4002 (web scraping/HTTP)
+- **Redis** for caching and **Prometheus/Grafana** for monitoring
+
+### Example MCP Servers Included
+
+| Server | Language | Port | Features |
+|--------|----------|------|----------|
+| Basic MCP | Node.js | 3001-3002 | Core MCP protocol, tools, resources |
+| File Tools | Node.js | 4001 | File operations, directory management |
+| Web Tools | Node.js | 4002 | HTTP requests, web scraping, browser automation |
+| Data Science | Python | 5001 | Data analysis, ML, visualization |
+
+Each server includes:
+- Full MCP protocol implementation
+- Health check endpoints
+- Comprehensive documentation
+- Docker containers
+- Production-ready configuration
+
+### Production Deployment
+
+For detailed production deployment instructions including Kubernetes, AWS ECS, Google Cloud Run, and more, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+#### Docker
 
 ```bash
 # Build image
@@ -409,7 +457,7 @@ docker run -p 8080:8080 -p 9090:9090 \
   mcp-gateway
 ```
 
-### Kubernetes
+#### Kubernetes
 
 Deploy using the included Helm chart:
 
@@ -419,7 +467,7 @@ helm install mcp-gateway ./charts/mcp-gateway \
   --set config.gateway.environment=production
 ```
 
-### Systemd Service
+#### Systemd Service
 
 ```ini
 [Unit]

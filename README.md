@@ -1,5 +1,11 @@
 # MCP Gateway
 
+> **🌟 [Visit the Project Page](https://siddharth-ghatti.github.io/co-driver/) 🌟**
+> 
+> **For complete documentation, demos, and enterprise solutions**
+
+---
+
 A high-performance, production-ready gateway for the Model Context Protocol (MCP) written in Rust. This gateway acts as a central proxy, load balancer, and management layer for MCP servers.
 
 ## Features
@@ -155,7 +161,7 @@ Contact us for early access to these enterprise-grade capabilities:
 
 Ready to scale your MCP infrastructure to enterprise level?
 
-- **Project Page*: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
+- **📋 Full Documentation & Demos**: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
 
 ## Quick Start
 
@@ -703,7 +709,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Project Page**: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
+- **📋 Project Page & Documentation**: [https://siddharth-ghatti.github.io/co-driver/](https://siddharth-ghatti.github.io/co-driver/)
 - **Documentation**: [docs.rs/mcp-gateway](https://docs.rs/mcp-gateway)
 - **Issues**: [GitHub Issues](https://github.com/your-org/mcp-gateway/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/your-org/mcp-gateway/discussions)
